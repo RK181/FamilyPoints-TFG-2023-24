@@ -9,3 +9,8 @@ cd FamilyPoints-ionic-front/
 git submodule init
 git submodule update
 ```
+### Pull main project and submodules
+```
+git pull
+git submodule update
+```
