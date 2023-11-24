@@ -11,6 +11,5 @@ git submodule update
 ```
 ### Pull main project and submodules
 ```
-git pull
-git submodule update
+git pull --recurse-submodules
 ```
