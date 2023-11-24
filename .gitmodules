@@ -1,0 +1,6 @@
+[submodule "FamilyPoints-laravel-api"]
+	path = FamilyPoints-laravel-api
+	url = https://github.com/RK181/FamilyPoints-laravel-api.git
+[submodule "FamilyPoints-ionic-front"]
+	path = FamilyPoints-ionic-front
+	url = https://github.com/RK181/FamilyPoints-ionic-front.git
