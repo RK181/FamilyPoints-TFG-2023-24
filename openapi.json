@@ -1,0 +1,1749 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "FamilyPoints-TFG-2023-24 - OpenAPI 3.0",
+    "description": "Trabajo TFG \n\n`Autor: Robert Kazaryan`",
+    "version": "1.0.0",
+    "license": {
+      "name": "MIT License",
+      "url": "https://github.com/RK181/FamilyPoints-TFG-2023-24/blob/master/LICENSE"
+    }
+  },
+  "externalDocs": {
+    "description": "Proyecto en GitHub",
+    "url": "https://github.com/RK181/FamilyPoints-TFG-2023-24"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:8000/api"
+    }
+  ],
+  "tags": [
+    {
+      "name": "auth",
+      "description": "Recurso de auteticacion del usuario"
+    },
+    {
+      "name": "group",
+      "description": "Recurso de grupo de la pareja"
+    },
+    {
+      "name": "reward",
+      "description": "Recurso de recompensas de la pareja dentro del grupo"
+    },
+    {
+      "name": "task",
+      "description": "Recurso de tareas de la pareja dentro del grupo"
+    }
+  ],
+  "paths": {
+    "/auth/signup": {
+      "post": {
+        "tags": [
+          "auth"
+        ],
+        "summary": "Registrar un usuario",
+        "description": "Crea un usuario en el sistema",
+        "operationId": "signupUser",
+        "requestBody": {
+          "$ref": "#/components/requestBodies/UserSignUp"
+        },
+        "responses": {
+          "200": {
+            "description": "Exito de la operacion",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Error de validacion",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Error del servidor",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/auth/login": {
+      "post": {
+        "tags": [
+          "auth"
+        ],
+        "summary": "Iniciar sesion",
+        "description": "Un usuario registrado inicia la sesion",
+        "operationId": "loginUser",
+        "requestBody": {
+          "$ref": "#/components/requestBodies/UserLogin"
+        },
+        "responses": {
+          "200": {
+            "description": "Exito de la operacion",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Error de validacion",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Credenciales no son validos",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Error del servidor",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/auth/logout": {
+      "post": {
+        "tags": [
+          "auth"
+        ],
+        "summary": "Terminar sesion",
+        "description": "Cierra todas las sesiones del usuario",
+        "operationId": "logoutUser",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Exito de la operacion",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Error del servidor",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/group/create": {
+      "post": {
+        "tags": [
+          "group"
+        ],
+        "summary": "Crear el grupo",
+        "description": "Crea un grupo de dos usuarios. Cada usuario solo puede pertenecer a un grupo",
+        "operationId": "createGroup",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "description": "Cuerpo de Peticion",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Group"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Exito de la operacion",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Error de validacion",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Usuario no autenticado"
+          },
+          "500": {
+            "description": "Error del servidor",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/group/update": {
+      "put": {
+        "tags": [
+          "group"
+        ],
+        "summary": "Modificar los datos del grupo",
+        "description": "Modifica los datos del grupo, los campos a modificar se elegen de manera opcional",
+        "operationId": "updateGroup",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "description": "Cuerpo de peticion",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Group"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Exito de la operacion",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Error de validacion",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Usuario no autenticado"
+          },
+          "404": {
+            "description": "No se ha encontrado el grupo",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Error del servidor",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/group": {
+      "get": {
+        "tags": [
+          "group"
+        ],
+        "summary": "Obtener los datos del grupo",
+        "description": "Se obtiene informacion del grupo mediante el token de sesion del JWT del usuario",
+        "operationId": "getGroup",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Exito de la operacion",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Usuario no autenticado"
+          },
+          "404": {
+            "description": "No se ha encontrade el grupo",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Error del servidor",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/group/delete": {
+      "delete": {
+        "tags": [
+          "group"
+        ],
+        "summary": "Borrar el grupo",
+        "description": "Borra el grupo mediante el token de sesion JWT del usuario",
+        "operationId": "deleteGroup",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Exito de la operacion",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Usuario no autenticado"
+          },
+          "404": {
+            "description": "No se ha encontrade el grupo",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Error del servidor",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/reward/create": {
+      "post": {
+        "tags": [
+          "reward"
+        ],
+        "summary": "Crear una recompensa dentro del grupo",
+        "description": "Crea una recompensa dentro del grupo en el que se encuentra el usuario",
+        "operationId": "createReward",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "description": "Cuerpo de peticion",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Reward"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Exito de la operacion",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Error de validacion",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Usuario no autenticado"
+          },
+          "404": {
+            "description": "No se ha encontrado el grupo",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Error del servidor",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/reward/update": {
+      "put": {
+        "tags": [
+          "reward"
+        ],
+        "summary": "Modifica una recompensa dentro del grupo",
+        "description": "Modifica una recompensa dentro del grupo en el que se encuentra el usuario",
+        "operationId": "updateReward",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "description": "Cuerpo de peticion",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Reward"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Exito de la operacion",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Error de validacion",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Usuario no autenticado"
+          },
+          "404": {
+            "description": "No se ha encontrado el grupo o la recompensa",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Error del servidor",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/reward/redeem/{id}": {
+      "patch": {
+        "tags": [
+          "reward"
+        ],
+        "summary": "Canjear una recompensa del grupo",
+        "description": "Canjear una recompensa, que ha creado, del grupo, en el que se encuentra el usuario, con los puntos ganatos por la completacion de tareas. Puede tener valor negativo y para completar el canjeo se debe validar por la pareja, al menos que no se diga lo contrario en los ajustes del grupo",
+        "operationId": "redeemReward",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "integer"
+            },
+            "required": true,
+            "description": "ID de la recompensa a canjear"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Exito de la operacion",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Usuario no autenticado"
+          },
+          "403": {
+            "description": "Operacion no autorizada",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "No se ha encontrado el grupo o la recompensa",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Error del servidor",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/reward/validate/{id}": {
+      "patch": {
+        "tags": [
+          "reward"
+        ],
+        "summary": "Validar el canjeo de una recompensa",
+        "description": "Validar el canjeo de una recompensa, se debe hacer por el usuario distinto al creador, al menos que no se diga lo contrario en los ajustes del grupo",
+        "operationId": "validateReward",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "integer"
+            },
+            "required": true,
+            "description": "Numeric ID of the reward to validate"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Exito de la operacion",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Usuario no autenticado"
+          },
+          "403": {
+            "description": "Operacion no autorizada, depende de los ajustes del grupo",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "No se ha encontrado el grupo o la recompensa",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Error del servidor",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/reward/{id}": {
+      "get": {
+        "tags": [
+          "reward"
+        ],
+        "summary": "Obtener los datos de una recompensa del grupo",
+        "description": "Se obtiene informacion de una recompensa del grupo mediante su ID",
+        "operationId": "getRewardById",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "integer"
+            },
+            "required": true,
+            "description": "ID de la recompensa"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Exito de la operacion",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Usuario no autenticado"
+          },
+          "404": {
+            "description": "No se ha encontrado el grupo o la recompensa",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Error del servidor",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/group/reward/list": {
+      "get": {
+        "tags": [
+          "reward"
+        ],
+        "summary": "Obtener el listado de las recompensas del grupo",
+        "description": "Obtiene el listado de todas las recompensas del grupo",
+        "operationId": "getGroupRewardList",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Exito de la operacion",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Usuario no autenticado"
+          },
+          "404": {
+            "description": "No se ha encontrado el grupo",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Error del servidor",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/reward/delete/{id}": {
+      "delete": {
+        "tags": [
+          "reward"
+        ],
+        "summary": "Borrar una recompensa del grupo",
+        "description": "Borra una recompensa del brupo mediante su ID",
+        "operationId": "deleteRewardById",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "integer"
+            },
+            "required": true,
+            "description": "ID de la recompensa a borrar"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Exito de la operacion",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Usuario no autenticado"
+          },
+          "404": {
+            "description": "No se ha encontrado el grupo o la recompensa",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Error del servidor",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/task/create": {
+      "post": {
+        "tags": [
+          "task"
+        ],
+        "summary": "Crear una tarea dentro del grupo",
+        "description": "Crear una tarea dentro del grupo en el que se encuentra el usuario",
+        "operationId": "createTask",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "description": "Cuerpo de peticion",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Task"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Exito de la operacion",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Error de validacion",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Usuario no autenticado"
+          },
+          "404": {
+            "description": "No se ha encontrado el grupo",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Error del servidor",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/task/update": {
+      "put": {
+        "tags": [
+          "task"
+        ],
+        "summary": "Modificar los datos de una tarea del grupo",
+        "description": "Modificar los datos de una tarea dentro del grupo en el que se encuentra el usuario",
+        "operationId": "updateTask",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "description": "Cuerpo de peticion",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Task"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Exito de la operacion",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Error de validacion",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Usuario no autenticado"
+          },
+          "404": {
+            "description": "No se ha encontrado el grupo o la tarea",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Error del servidor",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/task/approve/{id}": {
+      "patch": {
+        "tags": [
+          "task"
+        ],
+        "summary": "Aprueba la creacion de una tarea del grupo",
+        "description": "Aprueba la creacion de una tarea del grupo, se debe hacer por la pareja del usuario creador de la tarea, al menos que no se diga lo contrario en los ajustes del grupo",
+        "operationId": "approveTaskById",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "integer"
+            },
+            "required": true,
+            "description": "ID de la tarea a aprobar"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Exito de la operacion",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Usuario no autenticado"
+          },
+          "403": {
+            "description": "Operacion no autorizada, depende de los ajustes del grupo",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "No se ha encontrado el grupo o la tarea",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Error del servidor",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/task/complete/{id}": {
+      "patch": {
+        "tags": [
+          "task"
+        ],
+        "summary": "Completar una tarea del grupo",
+        "description": "Completa una tarea (aprobada) del grupo. Para recibir los puntos, el usuario debe esperar la validacion, al menos que no se diga lo contrario en los ajustes del grupo",
+        "operationId": "completeTaskById",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "integer"
+            },
+            "required": true,
+            "description": "ID de la tarea a completar"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Exito de la operacion",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Usuario no autenticado"
+          },
+          "403": {
+            "description": "Operacion no autorizada, depende de los ajustes del grupo",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "No se ha encontrado el grupo o la tarea",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Error del servidor",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/task/validate/{id}": {
+      "patch": {
+        "tags": [
+          "task"
+        ],
+        "summary": "Valida la completacion de una tarea del grupo",
+        "description": "Valida la completacion de una tarea (completada) del grupo, para que el usuario pueda recibir sus puntos. La validacion se hace por el usuario distinto al quien haya completado la tarea, al menos que no se diga lo contrario en los ajustes del grupo",
+        "operationId": "validateTaskById",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "integer"
+            },
+            "required": true,
+            "description": "ID de la tarea completada a validar"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Exito de la operacion",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Usuario no autenticado"
+          },
+          "403": {
+            "description": "Operacion no autorizada, depende de los ajustes del grupo",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "No se ha encontrado el grupo o la tarea",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Error del servidor",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/task/invalidate/{id}": {
+      "patch": {
+        "tags": [
+          "task"
+        ],
+        "summary": "Invalidar la completacion de una tarea del grupo",
+        "description": "Invalidar la completacion de una tarea del grupo, debe ser permitida en los ajustes del grupo. Lo pueden hacer todos los mienmbos del grupo",
+        "operationId": "inValidateTaskById",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "integer"
+            },
+            "required": true,
+            "description": "ID de la tarea completada y validada a invalidar"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Exito de la operacion",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Usuario no autenticado"
+          },
+          "403": {
+            "description": "Operacion no autorizada, depende de los ajustes del grupo",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "No se ha encontrado el grupo o la tarea",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Error del servidor",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/task/{id}": {
+      "get": {
+        "tags": [
+          "task"
+        ],
+        "summary": "Obtener los datos de una tarea del grupo",
+        "description": "Se obtiene informacion de una tarea del grupo mediante su ID",
+        "operationId": "getTaskById",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "integer"
+            },
+            "required": true,
+            "description": "ID de la tarea a obtener"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Exito de la operacion",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Usuario no autenticado"
+          },
+          "404": {
+            "description": "No se ha encontrado el grupo o la tarea",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Error del servidor",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/group/task/list": {
+      "get": {
+        "tags": [
+          "task"
+        ],
+        "summary": "Obtener el listado de tares del grupo",
+        "description": "Obtiene el listado de todas las tareas del grupo",
+        "operationId": "getGroupTaskList",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Exito de la operacion",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Usuario no autenticado"
+          },
+          "404": {
+            "description": "No se ha encontrado el grupo",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Error del servidor",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/task/delete/{id}": {
+      "delete": {
+        "tags": [
+          "task"
+        ],
+        "summary": "Borrar una tarea del grupo",
+        "description": "Borra una tarea del grupo mediante su ID",
+        "operationId": "deleteTaskById",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "integer"
+            },
+            "required": true,
+            "description": "ID de la tarea a borrar"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Exito de la operacion",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Usuario no autenticado"
+          },
+          "404": {
+            "description": "No se ha encontrado el grupo o la tarea",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Error del servidor",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Task": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64",
+            "example": 10
+          },
+          "title": {
+            "type": "string",
+            "example": "Pasear al perro"
+          },
+          "description": {
+            "type": "string",
+            "example": "Pasear al perro por la tarde"
+          },
+          "reward": {
+            "type": "integer",
+            "example": "50"
+          },
+          "expire_at": {
+            "type": "string",
+            "format": "date",
+            "maxLength": 10,
+            "example": "01/01/2025"
+          },
+          "approve": {
+            "type": "boolean",
+            "example": false
+          },
+          "complete": {
+            "type": "boolean",
+            "example": false
+          },
+          "validate": {
+            "type": "boolean",
+            "example": false
+          },
+          "creator": {
+            "$ref": "#/components/schemas/User"
+          },
+          "user": {
+            "$ref": "#/components/schemas/User"
+          }
+        }
+      },
+      "Reward": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64",
+            "example": 10
+          },
+          "title": {
+            "type": "string",
+            "example": "Salir con amigos"
+          },
+          "description": {
+            "type": "string",
+            "example": "Salir con amigos toda la tarde"
+          },
+          "cost": {
+            "type": "integer",
+            "example": "100"
+          },
+          "expire_at": {
+            "type": "string",
+            "format": "date",
+            "maxLength": 10,
+            "example": "01/01/2025"
+          },
+          "redeem": {
+            "type": "boolean",
+            "example": false
+          },
+          "validate": {
+            "type": "boolean",
+            "example": false
+          },
+          "user": {
+            "$ref": "#/components/schemas/User"
+          }
+        }
+      },
+      "Group": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "John y Clara"
+          },
+          "points_name": {
+            "type": "string",
+            "example": "dogis"
+          },
+          "points_icon": {
+            "type": "string",
+            "example": "1"
+          },
+          "conf_t_approve": {
+            "type": "boolean",
+            "example": true
+          },
+          "conf_t_validate": {
+            "type": "boolean",
+            "example": true
+          },
+          "conf_t_invalidate": {
+            "type": "boolean",
+            "example": true
+          },
+          "conf_r_valiadte": {
+            "type": "boolean",
+            "example": true
+          },
+          "creator": {
+            "$ref": "#/components/schemas/User"
+          },
+          "couple": {
+            "$ref": "#/components/schemas/User"
+          }
+        }
+      },
+      "User": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "theUser"
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "example": "john@email.com"
+          },
+          "password": {
+            "type": "string",
+            "format": "password",
+            "example": "12345"
+          },
+          "points": {
+            "type": "integer",
+            "example": "12345"
+          }
+        }
+      },
+      "ApiResponse": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "boolean"
+          },
+          "message": {
+            "type": "string"
+          }
+        }
+      },
+      "AuthResponse": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "boolean"
+          },
+          "message": {
+            "type": "string"
+          },
+          "token": {
+            "type": "string"
+          }
+        }
+      },
+      "ValidationErrorResponse": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "boolean"
+          },
+          "message": {
+            "type": "string"
+          },
+          "errors": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "email": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "password": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "points_name": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "points_icon": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "requestBodies": {
+      "User": {
+        "description": "Usuario para registrar",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/User"
+            }
+          }
+        }
+      },
+      "UserSignUp": {
+        "description": "",
+        "content": {
+          "application/json": {
+            "schema": {
+              "allOf": [
+                {
+                  "$ref": "#/components/schemas/User"
+                },
+                {
+                  "required": [
+                    "name",
+                    "email",
+                    "password"
+                  ]
+                }
+              ]
+            },
+            "example": {
+              "name": "john",
+              "email": "12345",
+              "password": "john@email.com"
+            }
+          }
+        }
+      },
+      "UserLogin": {
+        "description": "Datos del usuario para iniciar la sesion",
+        "content": {
+          "application/json": {
+            "schema": {
+              "allOf": [
+                {
+                  "$ref": "#/components/schemas/User"
+                },
+                {
+                  "required": [
+                    "email",
+                    "password"
+                  ]
+                }
+              ]
+            },
+            "example": {
+              "email": "john@email.com",
+              "password": "12345"
+            }
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    }
+  }
+}
