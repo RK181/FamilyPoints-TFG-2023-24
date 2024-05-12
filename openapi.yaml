@@ -1,8 +1,8 @@
 openapi: 3.0.3
 info:
-  title: FamilyPoints-TFG-2023-24 - OpenAPI 3.0
-  description: "Trabajo TFG \n\n`Autor: Robert Kazaryan`"
-  version: 1.0.0
+  title: FamilyPoints - OpenAPI 3.0
+  description: "Documentacion de la aplicaion FamilyPoints. Una aplicación para gestionar el intercambio de favores entre miembros de la misma familia (quedarse una noche con los niños, cocinar para toda la semana, etc.), qué se acumularán como puntos canjeables por actividades lúdicas (noche libre con amigos, spa, tarde de videojuegos, etc.). \n\n `Trabajo Final de Grado, Universidad de Alicante 2023-24.` \n\n`Autor: Robert Kazaryan.`"
+  version: 2.0.0
   license:
     name: MIT License
     url: https://github.com/RK181/FamilyPoints-TFG-2023-24/blob/master/LICENSE
@@ -26,13 +26,13 @@ paths:
       tags:
         - auth
       summary: 'Registrar un usuario'
-      description: 'Crea un usuario en el sistema'
+      description: 'Crea un usuario en el sistema y envia un correo electronico de confirmacion al email proporcionado. Para registrar al usuario definitivamente es imprescindible confirmar el correo electronico.'
       operationId: signupUser
       requestBody:
         $ref: '#/components/requestBodies/UserSignUp'
       responses:
         '200':
-          description: 'Exito de la operacion'
+          description: 'Exito de la operacion, se ha enviado un correo electronico al email proporcionado'
           content:
            application/json:
             schema:
@@ -54,7 +54,7 @@ paths:
       tags:
         - auth
       summary: 'Iniciar sesion'
-      description: 'Un usuario registrado inicia la sesion'
+      description: 'Un usuario registrado inicia la sesion. El usuario debe de haber verificado su email.'
       operationId: loginUser
       requestBody:
         $ref: '#/components/requestBodies/UserLogin'
@@ -64,7 +64,7 @@ paths:
           content:
            application/json:
             schema:
-              $ref: '#/components/schemas/ApiResponse'
+              $ref: '#/components/schemas/AuthResponse'
         '400':
           description: 'Error de validacion'
           content:
@@ -76,7 +76,7 @@ paths:
           content:
            application/json:
             schema:
-              $ref: '#/components/schemas/AuthResponse'
+              $ref: '#/components/schemas/ApiResponse'
         '500':
           description: 'Error del servidor'
           content:
@@ -106,7 +106,7 @@ paths:
             schema:
               $ref: '#/components/schemas/ApiResponse'
   
-  /group/create:
+  /group:
     post:
       tags:
         - group
@@ -116,11 +116,7 @@ paths:
       security:
         - bearerAuth: []
       requestBody:
-        description: 'Cuerpo de Peticion'
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/Group'
+        $ref: '#/components/requestBodies/CreateGroup'
       responses:
         '200':
           description: 'Exito de la operacion'
@@ -136,13 +132,49 @@ paths:
               $ref: '#/components/schemas/ValidationErrorResponse'
         '401':
           description: 'Usuario no autenticado'
+          content:
+           application/json:
+            schema:
+              $ref: '#/components/schemas/ApiResponse'
         '500':
           description: 'Error del servidor'
           content:
            application/json:
             schema:
               $ref: '#/components/schemas/ApiResponse'
-  /group/update:
+    get:
+      tags:
+        - group
+      summary: 'Obtener los datos del grupo'
+      description: 'Se obtiene informacion del grupo mediante el token de sesion del JWT del usuario'
+      operationId: getGroup
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: 'Datos del grupo y sus participantes'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Group'
+        '401':
+          description: 'Usuario no autenticado'
+          content:
+           application/json:
+            schema:
+              $ref: '#/components/schemas/ApiResponse'
+        '404':
+          description: 'No se ha encontrade el grupo'
+          content:
+           application/json:
+            schema:
+              $ref: '#/components/schemas/ApiResponse'
+        '500':
+          description: 'Error del servidor'
+          content:
+           application/json:
+            schema:
+              $ref: '#/components/schemas/ApiResponse'
     put:
       tags:
         - group
@@ -157,6 +189,14 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/Group'
+            example:
+              name: 'Pepe y Clara'
+              points_name: 'cocos'
+              points_icon: '1'
+              conf_t_approve: false
+              conf_t_validate: false
+              conf_t_invalidate: false
+              conf_r_valiadte: false
       responses:
         '200':
           description: 'Exito de la operacion'
@@ -172,6 +212,10 @@ paths:
               $ref: '#/components/schemas/ValidationErrorResponse'
         '401':
           description: 'Usuario no autenticado'
+          content:
+           application/json:
+            schema:
+              $ref: '#/components/schemas/ApiResponse'
         '404':
           description: 'No se ha encontrado el grupo'
           content:
@@ -184,37 +228,6 @@ paths:
            application/json:
             schema:
               $ref: '#/components/schemas/ApiResponse'
-  /group:
-    get:
-      tags:
-        - group
-      summary: 'Obtener los datos del grupo'
-      description: 'Se obtiene informacion del grupo mediante el token de sesion del JWT del usuario'
-      operationId: getGroup
-      security:
-        - bearerAuth: []
-      responses:
-        '200':
-          description: 'Exito de la operacion'
-          content:
-           application/json:
-            schema:
-              $ref: '#/components/schemas/ApiResponse'
-        '401':
-          description: 'Usuario no autenticado'
-        '404':
-          description: 'No se ha encontrade el grupo'
-          content:
-           application/json:
-            schema:
-              $ref: '#/components/schemas/ApiResponse'
-        '500':
-          description: 'Error del servidor'
-          content:
-           application/json:
-            schema:
-              $ref: '#/components/schemas/ApiResponse'
-  /group/delete:
     delete:
       tags:
         - group
@@ -232,6 +245,10 @@ paths:
               $ref: '#/components/schemas/ApiResponse'
         '401':
           description: 'Usuario no autenticado'
+          content:
+           application/json:
+            schema:
+              $ref: '#/components/schemas/ApiResponse'
         '404':
           description: 'No se ha encontrade el grupo'
           content:
@@ -244,8 +261,49 @@ paths:
            application/json:
             schema:
               $ref: '#/components/schemas/ApiResponse'
+  /group/invitation/{email}:
+    get:
+      tags:
+        - group
+      summary: 'Invitar a la pareja al grupo'
+      description: 'Se manda un correo electronico con la invitacion para unirse al grupo'
+      operationId: inviteToGroup
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: email
+          schema:
+            type: string
+          required: true
+          description: 'Correo electronico del usuario a invitar al grupo'
+      responses:
+        '200':
+          description: 'Respuesta del exito de la operacion'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+        '400':
+          description: 'Error de validacion'
+          content:
+           application/json:
+            schema:
+              $ref: '#/components/schemas/ValidationErrorResponse'
+        '401':
+          description: 'Usuario no autenticado o no verificado'
+          content:
+           application/json:
+            schema:
+              $ref: '#/components/schemas/ApiResponse'
+        '500':
+          description: 'Error del servidor'
+          content:
+           application/json:
+            schema:
+              $ref: '#/components/schemas/ApiResponse'
   
-  /reward/create:
+  /reward:
     post:
       tags:
         - reward
@@ -275,6 +333,10 @@ paths:
               $ref: '#/components/schemas/ValidationErrorResponse'
         '401':
           description: 'Usuario no autenticado'
+          content:
+           application/json:
+            schema:
+              $ref: '#/components/schemas/ApiResponse'
         '404':
           description: 'No se ha encontrado el grupo'
           content:
@@ -287,7 +349,47 @@ paths:
            application/json:
             schema:
               $ref: '#/components/schemas/ApiResponse'
-  /reward/update:
+  /reward/{id}:
+    get:
+      tags:
+        - reward
+      summary: 'Obtener los datos de una recompensa del grupo'
+      description: 'Se obtiene informacion de una recompensa del grupo mediante su ID'
+      operationId: getRewardById
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+          description: 'ID de la recompensa'
+      responses:
+        '200':
+          description: 'Datos de una recompensa del grupo'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Reward'
+        '401':
+          description: 'Usuario no autenticado'
+          content:
+           application/json:
+            schema:
+              $ref: '#/components/schemas/ApiResponse'
+        '404':
+          description: 'No se ha encontrado el grupo o la recompensa'
+          content:
+           application/json:
+            schema:
+              $ref: '#/components/schemas/ApiResponse'
+        '500':
+          description: 'Error del servidor'
+          content:
+           application/json:
+            schema:
+              $ref: '#/components/schemas/ApiResponse'
     put:
       tags:
         - reward
@@ -296,6 +398,13 @@ paths:
       operationId: updateReward
       security:
         - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+          description: 'ID de la recompensa'
       requestBody:
         description: 'Cuerpo de peticion'
         content:
@@ -317,6 +426,50 @@ paths:
               $ref: '#/components/schemas/ValidationErrorResponse'
         '401':
           description: 'Usuario no autenticado'
+          content:
+           application/json:
+            schema:
+              $ref: '#/components/schemas/ApiResponse'
+        '404':
+          description: 'No se ha encontrado el grupo o la recompensa'
+          content:
+           application/json:
+            schema:
+              $ref: '#/components/schemas/ApiResponse'
+        '500':
+          description: 'Error del servidor'
+          content:
+           application/json:
+            schema:
+              $ref: '#/components/schemas/ApiResponse'
+    delete:
+      tags:
+        - reward
+      summary: 'Borrar una recompensa del grupo'
+      description: 'Borra una recompensa del brupo mediante su ID'
+      operationId: deleteRewardById
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+          description: 'ID de la recompensa a borrar'
+      responses:
+        '200':
+          description: 'Exito de la operacion'
+          content:
+           application/json:
+            schema:
+              $ref: '#/components/schemas/ApiResponse'
+        '401':
+          description: 'Usuario no autenticado'
+          content:
+           application/json:
+            schema:
+              $ref: '#/components/schemas/ApiResponse'
         '404':
           description: 'No se ha encontrado el grupo o la recompensa'
           content:
@@ -354,6 +507,10 @@ paths:
               $ref: '#/components/schemas/ApiResponse'
         '401':
           description: 'Usuario no autenticado'
+          content:
+           application/json:
+            schema:
+              $ref: '#/components/schemas/ApiResponse'
         '403':
           description: 'Operacion no autorizada'
           content:
@@ -397,6 +554,10 @@ paths:
               $ref: '#/components/schemas/ApiResponse'
         '401':
           description: 'Usuario no autenticado'
+          content:
+           application/json:
+            schema:
+              $ref: '#/components/schemas/ApiResponse'
         '403':
           description: 'Operacion no autorizada, depende de los ajustes del grupo'
           content:
@@ -415,44 +576,7 @@ paths:
            application/json:
             schema:
               $ref: '#/components/schemas/ApiResponse'
-  /reward/{id}:
-    get:
-      tags:
-        - reward
-      summary: 'Obtener los datos de una recompensa del grupo'
-      description: 'Se obtiene informacion de una recompensa del grupo mediante su ID'
-      operationId: getRewardById
-      security:
-        - bearerAuth: []
-      parameters:
-        - in: path
-          name: id
-          schema:
-            type: integer
-          required: true
-          description: 'ID de la recompensa'
-      responses:
-        '200':
-          description: 'Exito de la operacion'
-          content:
-           application/json:
-            schema:
-              $ref: '#/components/schemas/ApiResponse'
-        '401':
-          description: 'Usuario no autenticado'
-        '404':
-          description: 'No se ha encontrado el grupo o la recompensa'
-          content:
-           application/json:
-            schema:
-              $ref: '#/components/schemas/ApiResponse'
-        '500':
-          description: 'Error del servidor'
-          content:
-           application/json:
-            schema:
-              $ref: '#/components/schemas/ApiResponse'
-  /group/reward/list:
+  /group/reward:
     get:
       tags:
         - reward
@@ -463,13 +587,19 @@ paths:
         - bearerAuth: []
       responses:
         '200':
-          description: 'Exito de la operacion'
+          description: 'Listado de recompensas del grupo'
+          content:
+           application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/Reward'
+        '401':
+          description: 'Usuario no autenticado'
           content:
            application/json:
             schema:
               $ref: '#/components/schemas/ApiResponse'
-        '401':
-          description: 'Usuario no autenticado'
         '404':
           description: 'No se ha encontrado el grupo'
           content:
@@ -482,45 +612,8 @@ paths:
            application/json:
             schema:
               $ref: '#/components/schemas/ApiResponse'
-  /reward/delete/{id}:
-    delete:
-      tags:
-        - reward
-      summary: 'Borrar una recompensa del grupo'
-      description: 'Borra una recompensa del brupo mediante su ID'
-      operationId: deleteRewardById
-      security:
-        - bearerAuth: []
-      parameters:
-        - in: path
-          name: id
-          schema:
-            type: integer
-          required: true
-          description: 'ID de la recompensa a borrar'
-      responses:
-        '200':
-          description: 'Exito de la operacion'
-          content:
-           application/json:
-            schema:
-              $ref: '#/components/schemas/ApiResponse'
-        '401':
-          description: 'Usuario no autenticado'
-        '404':
-          description: 'No se ha encontrado el grupo o la recompensa'
-          content:
-           application/json:
-            schema:
-              $ref: '#/components/schemas/ApiResponse'
-        '500':
-          description: 'Error del servidor'
-          content:
-           application/json:
-            schema:
-              $ref: '#/components/schemas/ApiResponse'
   
-  /task/create:
+  /task:
     post:
       tags:
         - task
@@ -550,6 +643,10 @@ paths:
               $ref: '#/components/schemas/ValidationErrorResponse'
         '401':
           description: 'Usuario no autenticado'
+          content:
+           application/json:
+            schema:
+              $ref: '#/components/schemas/ApiResponse'
         '404':
           description: 'No se ha encontrado el grupo'
           content:
@@ -562,7 +659,47 @@ paths:
            application/json:
             schema:
               $ref: '#/components/schemas/ApiResponse'
-  /task/update:
+  /task/{id}:
+    get:
+      tags:
+        - task
+      summary: 'Obtener los datos de una tarea del grupo'
+      description: 'Se obtiene informacion de una tarea del grupo mediante su ID'
+      operationId: getTaskById
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+          description: 'ID de la tarea a obtener'
+      responses:
+        '200':
+          description: 'Datos de una tarea del grupo'
+          content:
+           application/json:
+            schema:
+              $ref: '#/components/schemas/Task'
+        '401':
+          description: 'Usuario no autenticado'
+          content:
+           application/json:
+            schema:
+              $ref: '#/components/schemas/ApiResponse'
+        '404':
+          description: 'No se ha encontrado el grupo o la tarea'
+          content:
+           application/json:
+            schema:
+              $ref: '#/components/schemas/ApiResponse'
+        '500':
+          description: 'Error del servidor'
+          content:
+           application/json:
+            schema:
+              $ref: '#/components/schemas/ApiResponse'
     put:
       tags:
         - task
@@ -571,6 +708,13 @@ paths:
       operationId: updateTask
       security:
         - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+          description: 'ID de la tarea a obtener'
       requestBody:
         description: 'Cuerpo de peticion'
         content:
@@ -592,6 +736,50 @@ paths:
               $ref: '#/components/schemas/ValidationErrorResponse'
         '401':
           description: 'Usuario no autenticado'
+          content:
+           application/json:
+            schema:
+              $ref: '#/components/schemas/ApiResponse'
+        '404':
+          description: 'No se ha encontrado el grupo o la tarea'
+          content:
+           application/json:
+            schema:
+              $ref: '#/components/schemas/ApiResponse'
+        '500':
+          description: 'Error del servidor'
+          content:
+           application/json:
+            schema:
+              $ref: '#/components/schemas/ApiResponse'
+    delete:
+      tags:
+        - task
+      summary: 'Borrar una tarea del grupo'
+      description: 'Borra una tarea del grupo mediante su ID'
+      operationId: deleteTaskById
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+          description: 'ID de la tarea a borrar'
+      responses:
+        '200':
+          description: 'Exito de la operacion'
+          content:
+           application/json:
+            schema:
+              $ref: '#/components/schemas/ApiResponse'
+        '401':
+          description: 'Usuario no autenticado'
+          content:
+           application/json:
+            schema:
+              $ref: '#/components/schemas/ApiResponse'
         '404':
           description: 'No se ha encontrado el grupo o la tarea'
           content:
@@ -629,6 +817,10 @@ paths:
               $ref: '#/components/schemas/ApiResponse'
         '401':
           description: 'Usuario no autenticado'
+          content:
+           application/json:
+            schema:
+              $ref: '#/components/schemas/ApiResponse'
         '403':
           description: 'Operacion no autorizada, depende de los ajustes del grupo'
           content:
@@ -672,6 +864,10 @@ paths:
               $ref: '#/components/schemas/ApiResponse'
         '401':
           description: 'Usuario no autenticado'
+          content:
+           application/json:
+            schema:
+              $ref: '#/components/schemas/ApiResponse'
         '403':
           description: 'Operacion no autorizada, depende de los ajustes del grupo'
           content:
@@ -715,6 +911,10 @@ paths:
               $ref: '#/components/schemas/ApiResponse'
         '401':
           description: 'Usuario no autenticado'
+          content:
+           application/json:
+            schema:
+              $ref: '#/components/schemas/ApiResponse'
         '403':
           description: 'Operacion no autorizada, depende de los ajustes del grupo'
           content:
@@ -758,6 +958,10 @@ paths:
               $ref: '#/components/schemas/ApiResponse'
         '401':
           description: 'Usuario no autenticado'
+          content:
+           application/json:
+            schema:
+              $ref: '#/components/schemas/ApiResponse'
         '403':
           description: 'Operacion no autorizada, depende de los ajustes del grupo'
           content:
@@ -776,44 +980,7 @@ paths:
            application/json:
             schema:
               $ref: '#/components/schemas/ApiResponse'
-  /task/{id}:
-    get:
-      tags:
-        - task
-      summary: 'Obtener los datos de una tarea del grupo'
-      description: 'Se obtiene informacion de una tarea del grupo mediante su ID'
-      operationId: getTaskById
-      security:
-        - bearerAuth: []
-      parameters:
-        - in: path
-          name: id
-          schema:
-            type: integer
-          required: true
-          description: 'ID de la tarea a obtener'
-      responses:
-        '200':
-          description: 'Exito de la operacion'
-          content:
-           application/json:
-            schema:
-              $ref: '#/components/schemas/ApiResponse'
-        '401':
-          description: 'Usuario no autenticado'
-        '404':
-          description: 'No se ha encontrado el grupo o la tarea'
-          content:
-           application/json:
-            schema:
-              $ref: '#/components/schemas/ApiResponse'
-        '500':
-          description: 'Error del servidor'
-          content:
-           application/json:
-            schema:
-              $ref: '#/components/schemas/ApiResponse'
-  /group/task/list:
+  /group/task:
     get:
       tags:
         - task
@@ -824,52 +991,21 @@ paths:
         - bearerAuth: []
       responses:
         '200':
-          description: 'Exito de la operacion'
+          description: 'Lostado de las tareas del grupo'
+          content:
+           application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/Task'
+        '401':
+          description: 'Usuario no autenticado'
           content:
            application/json:
             schema:
               $ref: '#/components/schemas/ApiResponse'
-        '401':
-          description: 'Usuario no autenticado'
         '404':
           description: 'No se ha encontrado el grupo'
-          content:
-           application/json:
-            schema:
-              $ref: '#/components/schemas/ApiResponse'
-        '500':
-          description: 'Error del servidor'
-          content:
-           application/json:
-            schema:
-              $ref: '#/components/schemas/ApiResponse'
-  /task/delete/{id}:
-    delete:
-      tags:
-        - task
-      summary: 'Borrar una tarea del grupo'
-      description: 'Borra una tarea del grupo mediante su ID'
-      operationId: deleteTaskById
-      security:
-        - bearerAuth: []
-      parameters:
-        - in: path
-          name: id
-          schema:
-            type: integer
-          required: true
-          description: 'ID de la tarea a borrar'
-      responses:
-        '200':
-          description: 'Exito de la operacion'
-          content:
-           application/json:
-            schema:
-              $ref: '#/components/schemas/ApiResponse'
-        '401':
-          description: 'Usuario no autenticado'
-        '404':
-          description: 'No se ha encontrado el grupo o la tarea'
           content:
            application/json:
             schema:
@@ -883,78 +1019,34 @@ paths:
 
 components:
   schemas:
-    Task:
+    User:
       type: object
       properties:
-        id:
+        name:
+          type: string
+          example: 'Pepe'
+        email:
+          type: string
+          format: email
+          example: 'pepe@email.com'
+        password:
+          type: string
+          format: password
+          example: '12345'
+          writeOnly: true
+        points:
           type: integer
-          format: int64
-          example: 10
-        title:
-          type: string
-          example: Pasear al perro
-        description:
-          type: string
-          example: Pasear al perro por la tarde
-        reward:
-          type: integer
-          example: '50'
-        expire_at:
-          type: string
-          format: date 
-          maxLength: 10
-          example: '01/01/2025'
-        approve:
-          type: boolean
-          example: false
-        complete:
-          type: boolean
-          example: false
-        validate:
-          type: boolean
-          example: false
-        creator:
-          $ref: '#/components/schemas/User'
-        user:
-          $ref: '#/components/schemas/User'
-    Reward:
-      type: object
-      properties:
-        id:
-          type: integer
-          format: int64
-          example: 10
-        title:
-          type: string
-          example: Salir con amigos
-        description:
-          type: string
-          example: Salir con amigos toda la tarde
-        cost:
-          type: integer
-          example: '100'
-        expire_at:
-          type: string
-          format: date 
-          maxLength: 10
-          example: '01/01/2025'
-        redeem:
-          type: boolean
-          example: false
-        validate:
-          type: boolean
-          example: false
-        user:
-          $ref: '#/components/schemas/User'
+          example: '0'
+          readOnly: true 
     Group:
       type: object
       properties:
         name:
           type: string
-          example: John y Clara
+          example: 'Pepe y Clara'
         points_name:
           type: string
-          example: dogis
+          example: 'cocos'
         points_icon:
           type: string
           example: '1'
@@ -971,38 +1063,101 @@ components:
           type: boolean
           example: true
         creator:
-          $ref: '#/components/schemas/User'
+          allOf:
+            - $ref: '#/components/schemas/User'
+            - readOnly: true
+            - description: 'El creador del grupo'
         couple:
-          $ref: '#/components/schemas/User'
-    User:
+          allOf:
+            - $ref: '#/components/schemas/User'
+            - description: 'La pareja'
+    Reward:
       type: object
       properties:
-        name:
-          type: string
-          example: theUser
-        email:
-          type: string
-          format: email
-          example: john@email.com
-        password:
-          type: string
-          format: password
-          example: '12345'
-        points:
+        id:
           type: integer
-          example: '12345'
+          format: int64
+          example: 10
+          readOnly: true
+        title:
+          type: string
+          example: 'Salir con amigos'
+        description:
+          type: string
+          example: 'Salir con amigos toda la tarde'
+        cost:
+          type: integer
+          example: '100'
+        expire_at:
+          type: string
+          format: date 
+          maxLength: 10
+          example: '01/01/2025'
+        redeem:
+          type: boolean
+          example: false
+          readOnly: true
+        validate:
+          type: boolean
+          example: false
+          readOnly: true
+        user:
+          allOf:
+            - $ref: '#/components/schemas/User'
+            - readOnly: true
+            - description: 'El creador de la recompensa y el quien lo va a canjear'
+    Task:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 10
+          readOnly: true
+        title:
+          type: string
+          example: 'Pasear al perro'
+        description:
+          type: string
+          example: 'Pasear al perro por la tarde'
+        reward:
+          type: integer
+          example: '50'
+        expire_at:
+          type: string
+          format: date 
+          maxLength: 10
+          example: '01/01/2025'
+        approve:
+          type: boolean
+          example: false
+          readOnly: true
+        complete:
+          type: boolean
+          example: false
+          readOnly: true
+        validate:
+          type: boolean
+          example: false
+          readOnly: true
+        creator:
+          allOf:
+            - $ref: '#/components/schemas/User'
+            - readOnly: true
+            - description: 'El creador de la tarea'
+        user:
+          allOf:
+            - $ref: '#/components/schemas/User'
+            - readOnly: true
+            - description: 'El usuario que ha completado la tarea'
     ApiResponse:
       type: object
       properties:
-        status:
-          type: boolean
         message:
           type: string
     AuthResponse:
       type: object
       properties:
-        status:
-          type: boolean
         message:
           type: string
         token:
@@ -1010,8 +1165,6 @@ components:
     ValidationErrorResponse:
       type: object
       properties:
-        status:
-          type: boolean
         message:
           type: string
         errors:
@@ -1037,6 +1190,7 @@ components:
               type: array
               items:
                 type: string
+  
   requestBodies:
     User:
       description: 'Usuario para registrar'
@@ -1045,7 +1199,7 @@ components:
           schema:
             $ref: '#/components/schemas/User'
     UserSignUp:
-      description: ''
+      description: 'Cuerpo de peticion para registrar nuevo usuario'
       content:
         application/json:
           schema:
@@ -1056,11 +1210,11 @@ components:
                 - email
                 - password
           example:
-            name: 'john'
-            email: '12345'
-            password: 'john@email.com'
+            name: 'Pepe'
+            email: 'pepe@email.com'
+            password: '12345'
     UserLogin:
-      description: 'Datos del usuario para iniciar la sesion'
+      description: 'Cuerpo de peticion para iniciar la sesion'
       content:
         application/json:
           schema:
@@ -1070,8 +1224,32 @@ components:
                 - email
                 - password
           example:
-            email: 'john@email.com'
+            email: 'pepe@email.com'
             password: '12345'
+    CreateGroup:
+      description: 'Cuerpo de peticion para crear nuevo grupo'
+      content:
+        application/json:
+          schema:
+            allOf:
+              - $ref: '#/components/schemas/Group'
+              - required:
+                - name
+                - points_name
+                - points_icon
+                - conf_t_approve
+                - conf_t_validate
+                - conf_t_invalidate
+                - conf_r_valiadte
+          example:
+            name: 'Pepe y Clara'
+            points_name: 'cocos'
+            points_icon: '1'
+            conf_t_approve: true
+            conf_t_validate: true
+            conf_t_invalidate: true
+            conf_r_valiadte: true
+            
   securitySchemes:
     bearerAuth:
       type: http
