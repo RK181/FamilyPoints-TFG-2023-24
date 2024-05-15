@@ -1941,6 +1941,30 @@
                 "items": {
                   "type": "string"
                 }
+              },
+              "title": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "description": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "cost": {
+                "type": "array",
+                "items": {
+                  "type": "integer"
+                }
+              },
+              "reward": {
+                "type": "array",
+                "items": {
+                  "type": "integer"
+                }
               }
             }
           }
