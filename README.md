@@ -1,7 +1,7 @@
 # FamilyPoints (TFG 2023-24)
-# Introduction
+## Introduction
 An mobile application to manage the exchange of favors between members of the same family (staying one night with the children, cooking for the whole week, etc.), which will be accumulated as points redeemable for recreational activities (free night with friends, spa, afternoon video games, etc.).
-# Description
+## Description
 
 ## Url to the documentation on GitHub Pages
 [FamilyPoints Documentation](https://rk181.github.io/FamilyPoints-TFG-2023-24/)
