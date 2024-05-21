@@ -69,6 +69,6 @@ The prototype has the capability to register users, verify them, manage groups, 
         ```
     - **Backend**:
         ```
-        cd cd FamilyPoints-laravel-api
+        cd FamilyPoints-laravel-api
         php artisan serve
         ```
